@@ -5,8 +5,9 @@ node {
     --------------------------------*/
 
     def GIT_REPO           = "https://github.com/mukeshdevelp/ot-microservice-sarthi.git"
-
     def GIT_BRANCH         = "backend"
+
+    def PROJECT_DIR        = "salary/salary-api"
 
     def MAVEN_TOOL         = "Maven3"
     def SONAR_SERVER       = "SonarQube"
@@ -15,9 +16,6 @@ node {
     def SONAR_PROJECT_NAME = "Salary-API"
 
     def TRIVY_REPORT       = "reports/trivy-report.txt"
-   // def ZAP_REPORT         = "reports/zap-report.html"
-
-  //  def ZAP_TARGET_URL     = "http://your-app-url"
 
     def SLACK_CHANNEL      = "#ci-operation-notifications"
 
@@ -26,20 +24,19 @@ node {
 
     try {
 
-       stage('Checkout Code') {
+        stage('Checkout Code') {
 
-                git url: GIT_REPO, branch: GIT_BRANCH
+            git url: GIT_REPO, branch: GIT_BRANCH
 
-                dir('salary/salary-api') {
-                 sh 'pwd'
-    }
+            dir(PROJECT_DIR) {
+                sh 'pwd'
+            }
 
-}
+        }
 
 
         stage('Initialize Tools') {
-         
-            sh 'pwd'  
+
             mvnHome = tool MAVEN_TOOL
 
         }
@@ -47,27 +44,35 @@ node {
 
         stage('Code Compilation') {
 
-            sh "${mvnHome}/bin/mvn clean compile"
+            dir(PROJECT_DIR) {
+                sh "${mvnHome}/bin/mvn clean compile"
+            }
 
         }
 
 
         stage('Unit Testing') {
 
-            sh "${mvnHome}/bin/mvn test"
+            dir(PROJECT_DIR) {
+                sh "${mvnHome}/bin/mvn test"
+            }
 
         }
 
 
         stage('Static Code Analysis - SonarQube') {
 
-            withSonarQubeEnv(SONAR_SERVER) {
+            dir(PROJECT_DIR) {
 
-                sh """
-                ${mvnHome}/bin/mvn sonar:sonar \
-                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                -Dsonar.projectName=${SONAR_PROJECT_NAME}
-                """
+                withSonarQubeEnv(SONAR_SERVER) {
+
+                    sh """
+                    ${mvnHome}/bin/mvn sonar:sonar \
+                    -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                    -Dsonar.projectName=${SONAR_PROJECT_NAME}
+                    """
+
+                }
 
             }
 
@@ -76,28 +81,17 @@ node {
 
         stage('Dependency Scan - Trivy') {
 
-            sh """
-            mkdir -p reports
-            trivy fs --format table -o ${TRIVY_REPORT} .
-            """
+            dir(PROJECT_DIR) {
+
+                sh """
+                mkdir -p reports
+                trivy fs --format table -o ${TRIVY_REPORT} .
+                """
+
+            }
 
         }
 
-
-    /*    stage('DAST Scan - OWASP ZAP') {
-
-            sh """
-            docker run -t owasp/zap2docker-stable zap-baseline.py \
-            -t ${ZAP_TARGET_URL} \
-            -r ${ZAP_REPORT}
-            """
-
-        }
-
-*/
-        /* -------------------------------
-           Success Handling
-        --------------------------------*/
 
         echo "Build completed successfully."
 
@@ -115,10 +109,6 @@ URL: ${env.BUILD_URL}
 
     } catch (err) {
 
-        /* -------------------------------
-           Failure Handling
-        --------------------------------*/
-
         slackSend(
             channel: SLACK_CHANNEL,
             color: 'danger',
@@ -135,11 +125,7 @@ URL: ${env.BUILD_URL}
 
     } finally {
 
-        /* -------------------------------
-           Always Execute
-        --------------------------------*/
-
-        archiveArtifacts artifacts: 'reports/*', fingerprint: true
+        archiveArtifacts artifacts: '**/reports/*', fingerprint: true
 
     }
 }
