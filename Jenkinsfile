@@ -4,7 +4,7 @@ node {
        Global Variables
     --------------------------------*/
 
-    def GIT_REPO           = "https://github.com/mukeshdevelp/ot-microservice-sarthi.git
+    def GIT_REPO           = "https://github.com/OT-MICROSERVICES/salary-api.git"
 "
     def GIT_BRANCH         = "backend"
 
