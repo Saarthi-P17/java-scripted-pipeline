@@ -4,8 +4,8 @@ node {
        Global Variables
     --------------------------------*/
 
-    def GIT_REPO           = "https://github.com/OT-MICROSERVICES/salary-api.git"
-    
+    def GIT_REPO           = "https://github.com/mukeshdevelp/ot-microservice-sarthi.git"
+
     def GIT_BRANCH         = "backend"
 
     def MAVEN_TOOL         = "Maven3"
@@ -26,15 +26,20 @@ node {
 
     try {
 
-        stage('Checkout Code') {
+       stage('Checkout Code') {
 
-            git url: GIT_REPO, branch: GIT_BRANCH
+                git url: GIT_REPO, branch: GIT_BRANCH
 
-        }
+                dir('salary/salary-api') {
+                 sh 'pwd'
+    }
+
+}
 
 
         stage('Initialize Tools') {
-
+         
+            sh 'pwd'  
             mvnHome = tool MAVEN_TOOL
 
         }
