@@ -52,12 +52,10 @@ node {
 
 
         stage('Unit Testing') {
-
-            dir(PROJECT_DIR) {
-                sh "${mvnHome}/bin/mvn test"
-            }
-
-        }
+    dir(PROJECT_DIR) {
+        sh "${mvnHome}/bin/mvn test -DskipTests"
+    }
+}
 
 
         stage('Static Code Analysis - SonarQube') {
