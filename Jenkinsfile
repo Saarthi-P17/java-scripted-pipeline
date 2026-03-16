@@ -4,19 +4,20 @@ node {
        Global Variables
     --------------------------------*/
 
-    def GIT_REPO           = "https://github.com/your-repo/java-app.git"
-    def GIT_BRANCH         = "main"
+    def GIT_REPO           = "https://github.com/mukeshdevelp/ot-microservice-sarthi.git
+"
+    def GIT_BRANCH         = "backend"
 
     def MAVEN_TOOL         = "Maven3"
     def SONAR_SERVER       = "SonarQube"
 
-    def SONAR_PROJECT_KEY  = "java-project"
-    def SONAR_PROJECT_NAME = "java-project"
+    def SONAR_PROJECT_KEY  = "Salary-API"
+    def SONAR_PROJECT_NAME = "Salary-API"
 
     def TRIVY_REPORT       = "reports/trivy-report.txt"
-    def ZAP_REPORT         = "reports/zap-report.html"
+   // def ZAP_REPORT         = "reports/zap-report.html"
 
-    def ZAP_TARGET_URL     = "http://your-app-url"
+  //  def ZAP_TARGET_URL     = "http://your-app-url"
 
     def SLACK_CHANNEL      = "#ci-operation-notifications"
 
@@ -78,7 +79,7 @@ node {
         }
 
 
-        stage('DAST Scan - OWASP ZAP') {
+    /*    stage('DAST Scan - OWASP ZAP') {
 
             sh """
             docker run -t owasp/zap2docker-stable zap-baseline.py \
@@ -88,7 +89,7 @@ node {
 
         }
 
-
+*/
         /* -------------------------------
            Success Handling
         --------------------------------*/
