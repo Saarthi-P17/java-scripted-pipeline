@@ -53,10 +53,11 @@ node {
 
         stage('Unit Testing') {
     dir(PROJECT_DIR) {
-        sh "${mvnHome}/bin/mvn test -DskipTests"
+        catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+            sh "${mvnHome}/bin/mvn test"
+        }
     }
 }
-
 
         stage('Static Code Analysis - SonarQube') {
 
